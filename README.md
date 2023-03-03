@@ -106,7 +106,7 @@ class ChargeCard extends Interactor {
 
 ## Organizers
 
-Organizers sequentially `peinteractor-organizerctors, if any interactor in the chain is failed all the previous interactors will `rollback` (from the last resolved to the first). If any `rollback` is rejected the organizer will be rejected as well (any further interactors won't `rollback`)!
+Organizers sequentially `perform` interactors, if any interactor in the chain is failed all the previous interactors will `rollback` (from the last resolved to the first). If any `rollback` is rejected the organizer will be rejected as well (any further interactors won't `rollback`)!
 
 ```ts
 import { Organizer } from "interactor-js";
