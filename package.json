@@ -1,6 +1,6 @@
 {
   "name": "interactor-organizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Interactor pattern implementation",
   "keywords": [
     "interactor",
