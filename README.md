@@ -1,4 +1,4 @@
-# interactor-js
+# interactor-pattern
 
 Implementation of the Interactor pattern, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
 
