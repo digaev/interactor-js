@@ -1,4 +1,4 @@
-declare module "interactor-js" {
+declare module "interactor-organizer" {
   export interface Context {
     [x: string]: any;
   }

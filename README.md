@@ -1,4 +1,4 @@
-# interactor-js
+# interactor-organizer
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/digaev/interactor-js/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/digaev/interactor-js/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/digaev/interactor-js/badge.svg)](https://coveralls.io/github/digaev/interactor-js)
@@ -8,7 +8,7 @@ Implementation of the Interactor pattern, inspired by Ruby gem [interactor](http
 ## Getting started
 
 ```bash
-npm i interactor-js
+npm i interactor-organizer
 ```
 
 ## Interactors
@@ -67,7 +67,7 @@ Indicates if the interactor failed.
 
 `success: boolean`
 
-The opposite of `failure`.
+The opposite of `failure`.interactor-organizer
 
 ```ts
 import { Interactor } from "interactor-js";
@@ -105,7 +105,7 @@ class ChargeCard extends Interactor {
 
 ## Organizers
 
-Organizers sequentially `perform` interactors, if any interactor in the chain is failed all the previous interactors will `rollback` (from the last resolved to the first). If any `rollback` is rejected the organizer will be rejected as well (any further interactors won't `rollback`)!
+Organizers sequentially `peinteractor-organizerctors, if any interactor in the chain is failed all the previous interactors will `rollback` (from the last resolved to the first). If any `rollback` is rejected the organizer will be rejected as well (any further interactors won't `rollback`)!
 
 ```ts
 import { Organizer } from "interactor-js";
