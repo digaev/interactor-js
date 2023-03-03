@@ -1,48 +1,51 @@
-# interactor-pattern
+# interactor-js
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/digaev/interactor-js/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/digaev/interactor-js/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/digaev/interactor-js/badge.svg)](https://coveralls.io/github/digaev/interactor-js)
 
 Implementation of the Interactor pattern, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
 
-# Getting started
+## Getting started
 
 ```bash
 npm i interactor-js
 ```
 
-# Interactors
+## Interactors
 
 Every interactor has `after`, `before`, `call`, `fail`, `perform` and `rollback` methods, they are very similar to the Ruby gem methods, the only new method is `perform`.
 
-## after
+### after
 
 `after(): Promise<any>`
 
 Is called only if `call` was resolved.
 
-## before
+### before
 
 `before(): Promise<any>`
 
 Always called before `call`.
 
-## call
+### call
 
 `call(): Promise<any>`
 
 Business logic goes here.
 
-## fail
+### fail
 
 `fail(context?: Context): void`
 
 If something went wrong use this method. It sets the interactor's property `failure` to `true` (which is also used by Organizers). `context` is appended to the current context.
 
-## perform
+### perform
 
 `perform(): Promise<Interactor>`
 
 Is the **entry point**. This method calls `before`, `call` and `after` one after the other (in this order), if any of these methods are rejected `perform` will catch the error and call `fail({ error })`, therefore the method itself is never rejected. Returns the interactor.
 
-## rollback
+### rollback
 
 `rollback(): Promise<any>`
 
@@ -54,13 +57,13 @@ Is called after `call` if the interactor failed. This method is only used by Org
 
 Current context.
 
-## failure
+### failure
 
 `failure: boolean`
 
 Indicates if the interactor failed.
 
-## success
+### success
 
 `success: boolean`
 
