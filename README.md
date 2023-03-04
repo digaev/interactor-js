@@ -6,10 +6,65 @@
 
 Implementation of the Interactor pattern, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
 
+There are a few similar packages, but most of them are quite old and I like my implementation more. *I might rename the package, unfortunately all the pretty names are already taken and I've run out of ideas* 😕
+
 ## Getting started
 
 ```bash
 npm i interactor-organizer
+```
+
+```ts
+import { Interactor } from 'interactor-organizer';
+
+// Define an interactor
+class DoSomething extends Interactor {
+    // If there is anything needs to be done after `call`
+    async after() {
+        console.log('after');
+    }
+
+    // If there is anything needs to be done before `call`
+    async before() {
+        console.log('before');
+    }
+
+    // Your business logic goes here
+    async call() {
+      try {
+        console.log('call', this.context);
+      } catch (e) {
+        this.fail({ error: e }); // add `error` to `context`
+      }
+    }
+
+    // If you need do undo changes made by `call` if it fails
+    // This method is only used by Organizers
+    async rollback() {
+        console.log('rollback');
+    }
+}
+
+// Instantiate the interactor
+const interactor = new DoSomething({ foo: 'bar' });
+
+// Notice that we use `perform`, not `call`
+// The main difference between these two is that `call` should only have the business logic,
+// it "ignores" `after` and `before` hooks (read below for the details)
+await interactor.perform();
+
+// There is also a static method `perform`, so alternatively you can use interactors that way:
+// const interactor = await DoSomething.perform({ foo: 'bar' });
+
+console.log(interactor.failure, interactor.success, interactor.context);
+
+// output
+/**
+before
+call { foo: 'bar' }
+after
+false true { foo: 'bar' }
+*/
 ```
 
 ## Interactors
@@ -20,19 +75,19 @@ Every interactor has `after`, `before`, `call`, `fail`, `perform` and `rollback`
 
 `after(): Promise<any>`
 
-Is called only if `call` was resolved.
+Is called only if `call` was resolved. Only used by `perform`.
 
 ### before
 
 `before(): Promise<any>`
 
-Always called before `call`.
+Always called before `call`. Only used by `perform`.
 
 ### call
 
 `call(): Promise<any>`
 
-Business logic goes here.
+Your business logic goes here.
 
 ### fail
 
@@ -44,15 +99,17 @@ If something went wrong use this method. It sets the interactor's property `fail
 
 `perform(): Promise<Interactor>`
 
-Is the **entry point**. This method calls `before`, `call` and `after` one after the other (in this order), if any of these methods are rejected `perform` will catch the error and call `fail({ error })`, therefore the method itself is never rejected. Returns the interactor.
+This method calls `before`, `call` and `after` (in this order), if any of these methods are rejected `perform` will catch the error and call `fail({ error })`, therefore the method itself is never rejected. Returns the interactor.
+
+Most of the time you want to use this method instead of `call`. Organizers also use this method.
 
 ### rollback
 
 `rollback(): Promise<any>`
 
-Is called after `call` if the interactor failed. This method is only used by Organizers (see below).
+If you need to undo changes made by `call`. This method is only used by Organizers if the interactor failed.
 
-## context
+### context
 
 `context: Context`
 
@@ -68,10 +125,11 @@ Indicates if the interactor failed.
 
 `success: boolean`
 
-The opposite of `failure`.interactor-organizer
+The opposite of `failure`.
+___
 
 ```ts
-import { Interactor } from "interactor-js";
+import { Interactor } from "interactor-organizer";
 
 class PlaceOrder extends Interactor {
     get order() {
@@ -106,10 +164,10 @@ class ChargeCard extends Interactor {
 
 ## Organizers
 
-Organizers sequentially `perform` interactors, if any interactor in the chain is failed all the previous interactors will `rollback` (from the last resolved to the first). If any `rollback` is rejected the organizer will be rejected as well (any further interactors won't `rollback`)!
+Organizers sequentially `perform` interactors, if any interactor in the chain fails all the previous interactors will `rollback` (from the last resolved to the first). If any `rollback` rejects the organizer will reject as well (any further interactors won't `rollback`)!
 
 ```ts
-import { Organizer } from "interactor-js";
+import { Organizer } from "interactor-organizer";
 
 class CreateOrder extends Organizer {
     static organize() {
@@ -132,3 +190,4 @@ function createOrder(req, res, next) {
         .catch(next);
 }
 ```
+___
