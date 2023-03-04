@@ -6,8 +6,7 @@ import Interactor from '../lib/interactor';
 describe('Interactor', () => {
   afterEach(() => {
     Sinon.restore();
-  })
-
+  });
 
   describe('perform', () => {
     describe('without errors', () => {
@@ -31,7 +30,7 @@ describe('Interactor', () => {
         Sinon.assert.calledOnce(interactor.before as SinonSpy);
         Sinon.assert.calledOnce(interactor.call as SinonSpy);
         Sinon.assert.notCalled(interactor.fail as SinonSpy);
-        Sinon.assert.notCalled(interactor.rollback as SinonSpy)
+        Sinon.assert.notCalled(interactor.rollback as SinonSpy);
       });
     });
 
@@ -41,7 +40,7 @@ describe('Interactor', () => {
       before(() => {
         Sinon.spy(interactor, 'after');
         Sinon.spy(interactor, 'before');
-        Sinon.stub(interactor, 'call').rejects(new Error('Boo!'))
+        Sinon.stub(interactor, 'call').rejects(new Error('Boo!'));
         Sinon.spy(interactor, 'fail');
         Sinon.spy(interactor, 'rollback');
       });
@@ -62,5 +61,5 @@ describe('Interactor', () => {
         assert.equal(interactor.context.error.message, 'Boo!');
       });
     });
-  })
+  });
 });

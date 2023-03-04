@@ -1,8 +1,11 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable max-classes-per-file */
+
 import Sinon from 'sinon';
 import { assert } from 'chai';
 
-import Interactor from "../lib/interactor";
-import Organizer from "../lib/organizer";
+import Interactor from '../lib/interactor';
+import Organizer from '../lib/organizer';
 import { Context } from '../lib/context';
 
 class TestInteractor extends Interactor {
@@ -130,7 +133,7 @@ describe('Organizer', () => {
         Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
         Sinon.assert.calledOnce(TestInteractor6.rollbackSpy);
         Sinon.assert.notCalled(TestInteractor7.rollbackSpy);
-      })
+      });
     });
   });
 });

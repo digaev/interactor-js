@@ -1,5 +1,5 @@
-import Interactor from "./interactor";
-import { Context } from "./context";
+import Interactor from './interactor';
+import { Context } from './context';
 
 export interface OrganizeResult {
   context: Context;

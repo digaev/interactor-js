@@ -1,4 +1,4 @@
-import { Context } from "./context";
+import { Context } from './context';
 
 export default class Interactor {
   #failure = false;
@@ -23,14 +23,17 @@ export default class Interactor {
     this.context = context;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public after(): Promise<any> {
     return Promise.resolve();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public before(): Promise<any> {
     return Promise.resolve();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public call(): Promise<any> {
     return Promise.resolve();
   }
@@ -55,6 +58,7 @@ export default class Interactor {
       .then(() => this);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public rollback(): Promise<any> {
     return Promise.resolve();
   }
