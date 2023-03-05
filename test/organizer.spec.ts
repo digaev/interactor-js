@@ -34,8 +34,8 @@ class TestInteractor2 extends TestInteractor {
 class TestInteractor3 extends TestInteractor {
   static rollbackSpy = Sinon.spy();
 
-  async call() {
-    throw new Error('TestInteractor3 failed!');
+  async perform() {
+    this.fail({ error: new Error('TestInteractor3 failed!') });
   }
 }
 
@@ -44,7 +44,7 @@ class TestInteractor4 extends TestInteractor {
 }
 
 class TestInteractor5 extends TestInteractor {
-  public rollback(): Promise<any> {
+  public async rollback(): Promise<any> {
     throw new Error('TestInteractor5 rollback failed!');
   }
 }
@@ -56,8 +56,8 @@ class TestInteractor6 extends TestInteractor {
 class TestInteractor7 extends TestInteractor {
   static rollbackSpy = Sinon.spy();
 
-  public async call(): Promise<any> {
-    throw new Error('TestInteractor7 failed!');
+  public async perform(): Promise<any> {
+    this.fail({ error: new Error('TestInteractor7 failed!') });
   }
 }
 

@@ -13,10 +13,10 @@ export default class Organizer {
   }
 
   static async perform(context: Context = {}): Promise<OrganizeResult> {
-    const organize = this.organize();
+    const organized = this.organize();
     const result = { context, failure: false, success: true };
 
-    if (!organize.length) {
+    if (!organized.length) {
       return result;
     }
 
@@ -25,14 +25,14 @@ export default class Organizer {
       let i = 0;
 
       const next = () => {
-        const current = new organize[i](context);
+        const interactor = organized[i];
 
-        current.perform()
-          .finally(() => {
+        interactor.perform(context)
+          .then((current) => {
             if (current.success) {
               i = successful.push(current);
 
-              if (i >= organize.length) {
+              if (i >= organized.length) {
                 resolve(result);
               } else {
                 next();
@@ -52,7 +52,8 @@ export default class Organizer {
               })
                 .catch(reject);
             }
-          });
+          })
+          .catch(reject);
       };
 
       next();
