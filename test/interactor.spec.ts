@@ -1,61 +1,108 @@
-import Sinon, { SinonSpy } from 'sinon';
+/* eslint-disable max-classes-per-file */
+import Sinon from 'sinon';
 import { assert } from 'chai';
 
 import Interactor from '../lib/interactor';
+import { Context } from '../lib/context';
+
+class TestInteractor1 extends Interactor {
+  afterStub = Sinon.stub().resolves();
+
+  beforeStub = Sinon.stub().resolves();
+
+  failStub = Sinon.spy();
+
+  performStub = Sinon.stub().resolves();
+
+  rollbackStub = Sinon.stub().resolves();
+
+  public after(): Promise<any> {
+    return this.afterStub();
+  }
+
+  public before(): Promise<any> {
+    return this.beforeStub();
+  }
+
+  public perform(): Promise<void> {
+    return this.performStub();
+  }
+
+  public fail(context?: Context): void {
+    this.failStub(context);
+
+    return super.fail(context);
+  }
+
+  public rollback(): Promise<any> {
+    return this.rollbackStub();
+  }
+}
+
+class TestInteractor2 extends Interactor {
+  afterStub = Sinon.stub().resolves();
+
+  beforeStub = Sinon.stub().resolves();
+
+  failStub = Sinon.spy();
+
+  rollbackStub = Sinon.stub().resolves();
+
+  public after(): Promise<any> {
+    return this.afterStub();
+  }
+
+  public before(): Promise<any> {
+    return this.beforeStub();
+  }
+
+  public async perform(): Promise<void> {
+    this.fail({ error: new Error('Boo!') });
+  }
+
+  public fail(context?: Context): void {
+    this.failStub(context);
+
+    return super.fail(context);
+  }
+
+  public rollback(): Promise<any> {
+    return this.rollbackStub();
+  }
+}
 
 describe('Interactor', () => {
   afterEach(() => {
     Sinon.restore();
   });
 
-  describe('perform', () => {
+  describe('static perform', () => {
     describe('without errors', () => {
-      const interactor = new Interactor();
-
-      before(() => {
-        Sinon.spy(interactor, 'after');
-        Sinon.spy(interactor, 'before');
-        Sinon.spy(interactor, 'call');
-        Sinon.spy(interactor, 'fail');
-        Sinon.spy(interactor, 'rollback');
-      });
-
-      it('should success', async () => {
-        await interactor.perform();
+      it('succeeds', async () => {
+        const interactor = await TestInteractor1.perform<TestInteractor1>();
 
         assert.isFalse(interactor.failure);
         assert.isTrue(interactor.success);
 
-        Sinon.assert.calledOnce(interactor.after as SinonSpy);
-        Sinon.assert.calledOnce(interactor.before as SinonSpy);
-        Sinon.assert.calledOnce(interactor.call as SinonSpy);
-        Sinon.assert.notCalled(interactor.fail as SinonSpy);
-        Sinon.assert.notCalled(interactor.rollback as SinonSpy);
+        Sinon.assert.calledOnce(interactor.afterStub);
+        Sinon.assert.calledOnce(interactor.beforeStub);
+        Sinon.assert.calledOnce(interactor.performStub);
+        Sinon.assert.notCalled(interactor.failStub);
+        Sinon.assert.notCalled(interactor.rollbackStub);
       });
     });
 
     describe('with errors', () => {
-      const interactor = new Interactor();
-
-      before(() => {
-        Sinon.spy(interactor, 'after');
-        Sinon.spy(interactor, 'before');
-        Sinon.stub(interactor, 'call').rejects(new Error('Boo!'));
-        Sinon.spy(interactor, 'fail');
-        Sinon.spy(interactor, 'rollback');
-      });
-
-      it('should fail', async () => {
-        await interactor.perform();
+      it('fails', async () => {
+        const interactor = await TestInteractor2.perform<TestInteractor2>();
 
         assert.isTrue(interactor.failure);
         assert.isFalse(interactor.success);
 
-        Sinon.assert.notCalled(interactor.after as SinonSpy);
-        Sinon.assert.calledOnce(interactor.before as SinonSpy);
-        Sinon.assert.calledOnce(interactor.call as SinonSpy);
-        Sinon.assert.calledOnce(interactor.fail as SinonSpy);
-        Sinon.assert.notCalled(interactor.rollback as SinonSpy);
+        Sinon.assert.notCalled(interactor.afterStub);
+        Sinon.assert.calledOnce(interactor.beforeStub);
+        Sinon.assert.calledOnce(interactor.failStub);
+        Sinon.assert.notCalled(interactor.rollbackStub);
 
         assert.instanceOf(interactor.context.error, Error);
         assert.equal(interactor.context.error.message, 'Boo!');

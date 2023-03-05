@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+
 import { Context } from './context';
 
 export default class Interactor {
@@ -13,32 +15,28 @@ export default class Interactor {
     return !this.#failure;
   }
 
-  static perform(context: Context = {}) {
+  static async perform<T extends Interactor = Interactor>(context: Context = {}): Promise<T> {
     const interactor = new this(context);
 
-    return interactor.perform();
+    return interactor.before()
+      .then(() => interactor.perform())
+      .then(() => interactor.success && interactor.after() as any)
+      .then(() => interactor as T);
   }
 
   constructor(context: Context = {}) {
     this.context = context;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public after(): Promise<any> {
+  public after(): Promise<void> {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public before(): Promise<any> {
+  public before(): Promise<void> {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public call(): Promise<any> {
-    return Promise.resolve();
-  }
-
-  public fail(context: Context = {}) {
+  public fail(context: Context = {}): void {
     this.#failure = true;
 
     Object.keys(context).forEach((k) => {
@@ -46,20 +44,11 @@ export default class Interactor {
     });
   }
 
-  public async perform(): Promise<Interactor> {
-    this.#failure = false;
-
-    return this.before()
-      .then(() => this.call())
-      .then(() => this.success && this.after())
-      .catch((error) => {
-        this.fail({ error });
-      })
-      .then(() => this);
+  public perform(): Promise<void> {
+    return Promise.resolve();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public rollback(): Promise<any> {
+  public rollback(): Promise<void> {
     return Promise.resolve();
   }
 }
