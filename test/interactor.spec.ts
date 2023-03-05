@@ -3,7 +3,6 @@ import Sinon from 'sinon';
 import { assert } from 'chai';
 
 import Interactor from '../lib/interactor';
-import { Context } from '../lib/context';
 
 class TestInteractor1 extends Interactor {
   afterStub = Sinon.stub().resolves();
@@ -28,7 +27,7 @@ class TestInteractor1 extends Interactor {
     return this.performStub();
   }
 
-  public fail(context?: Context): void {
+  public fail(context?: any): void {
     this.failStub(context);
 
     return super.fail(context);
@@ -60,7 +59,7 @@ class TestInteractor2 extends Interactor {
     this.fail({ error: new Error('Boo!') });
   }
 
-  public fail(context?: Context): void {
+  public fail(context?: any): void {
     this.failStub(context);
 
     return super.fail(context);

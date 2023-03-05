@@ -1,27 +1,25 @@
-declare module "interactor-organizer" {
-  export interface Context {
-    [x: string]: any;
-  }
+/* eslint-disable max-classes-per-file */
 
+declare module 'interactor-organizer' {
   export class Interactor {
-    get context(): Context;
+    get context(): any;
     get failure(): boolean;
     get success(): boolean;
 
-    static perform(context?: Context): Promise<Interactor>;
+    static perform(context?: any): Promise<Interactor>;
 
-    constructor(context?: Context);
+    constructor(context?: any);
 
     after(): Promise<any>;
     before(): Promise<any>;
     call(): Promise<any>;
-    fail(context?: Context): void;
+    fail(context?: any): void;
     perform(): Promise<Interactor>;
     rollback(): Promise<any>;
   }
 
   export interface OrganizeResult {
-    context: Context;
+    context: any;
     failure: boolean;
     success: boolean;
   }
@@ -30,6 +28,6 @@ declare module "interactor-organizer" {
 
   export class Organizer {
     static organize(): TypeOfInteractor[];
-    static perform(context?: Context): Promise<OrganizeResult>
+    static perform(context?: any): Promise<OrganizeResult>;
   }
 }

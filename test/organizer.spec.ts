@@ -6,12 +6,11 @@ import { assert } from 'chai';
 
 import Interactor from '../lib/interactor';
 import Organizer from '../lib/organizer';
-import { Context } from '../lib/context';
 
 class TestInteractor extends Interactor {
   static rollbackSpy: Sinon.SinonSpy;
 
-  constructor(context: Context = {}) {
+  constructor(context: any = {}) {
     super(context);
 
     (this.constructor as any).rollbackSpy?.resetHistory();

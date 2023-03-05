@@ -1,8 +1,7 @@
 import Interactor from './interactor';
-import { Context } from './context';
 
 export interface OrganizeResult {
-  context: Context;
+  context: any;
   failure: boolean;
   success: boolean;
 }
@@ -12,7 +11,7 @@ export default class Organizer {
     return [];
   }
 
-  static async perform(context: Context = {}): Promise<OrganizeResult> {
+  static async perform(context: any = {}): Promise<OrganizeResult> {
     const organized = this.organize();
     const result = { context, failure: false, success: true };
 

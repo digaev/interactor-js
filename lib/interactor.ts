@@ -1,11 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
-import { Context } from './context';
-
 export default class Interactor {
   #failure = false;
 
-  context: Context;
+  context: any;
 
   get failure() {
     return this.#failure;
@@ -15,7 +13,7 @@ export default class Interactor {
     return !this.#failure;
   }
 
-  static async perform<T extends Interactor = Interactor>(context: Context = {}): Promise<T> {
+  static async perform<T extends Interactor = Interactor>(context: any = {}): Promise<T> {
     const interactor = new this(context);
 
     return interactor.before()
@@ -24,7 +22,7 @@ export default class Interactor {
       .then(() => interactor as T);
   }
 
-  constructor(context: Context = {}) {
+  constructor(context: any = {}) {
     this.context = context;
   }
 
@@ -36,7 +34,7 @@ export default class Interactor {
     return Promise.resolve();
   }
 
-  public fail(context: Context = {}): void {
+  public fail(context: any = {}): void {
     this.#failure = true;
 
     Object.keys(context).forEach((k) => {
