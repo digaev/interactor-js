@@ -16,14 +16,13 @@ export default class Interactor {
   static async perform<T extends Interactor = Interactor>(context: any = {}): Promise<T> {
     const interactor = new this(context);
 
-    return interactor.before()
-      .then(() => interactor.perform())
-      .then(() => interactor.success && interactor.after() as any)
-      .then(() => interactor as T);
+    return interactor.perform().then(() => interactor as T);
   }
 
   constructor(context: any = {}) {
     this.context = context;
+
+    this.hook();
   }
 
   public after(): Promise<void> {
@@ -48,5 +47,14 @@ export default class Interactor {
 
   public rollback(): Promise<void> {
     return Promise.resolve();
+  }
+
+  private hook() {
+    const original = this.perform.bind(this);
+
+    this.perform = () => Promise.resolve()
+      .then(() => this.before())
+      .then(original)
+      .then(() => this.success && this.after() as any);
   }
 }

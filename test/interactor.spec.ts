@@ -5,68 +5,8 @@ import { assert } from 'chai';
 import Interactor from '../lib/interactor';
 
 class TestInteractor1 extends Interactor {
-  afterStub = Sinon.stub().resolves();
-
-  beforeStub = Sinon.stub().resolves();
-
-  failStub = Sinon.spy();
-
-  performStub = Sinon.stub().resolves();
-
-  rollbackStub = Sinon.stub().resolves();
-
-  public after(): Promise<any> {
-    return this.afterStub();
-  }
-
-  public before(): Promise<any> {
-    return this.beforeStub();
-  }
-
-  public perform(): Promise<void> {
-    return this.performStub();
-  }
-
-  public fail(context?: any): void {
-    this.failStub(context);
-
-    return super.fail(context);
-  }
-
-  public rollback(): Promise<any> {
-    return this.rollbackStub();
-  }
-}
-
-class TestInteractor2 extends Interactor {
-  afterStub = Sinon.stub().resolves();
-
-  beforeStub = Sinon.stub().resolves();
-
-  failStub = Sinon.spy();
-
-  rollbackStub = Sinon.stub().resolves();
-
-  public after(): Promise<any> {
-    return this.afterStub();
-  }
-
-  public before(): Promise<any> {
-    return this.beforeStub();
-  }
-
   public async perform(): Promise<void> {
     this.fail({ error: new Error('Boo!') });
-  }
-
-  public fail(context?: any): void {
-    this.failStub(context);
-
-    return super.fail(context);
-  }
-
-  public rollback(): Promise<any> {
-    return this.rollbackStub();
   }
 }
 
@@ -77,31 +17,48 @@ describe('Interactor', () => {
 
   describe('static perform', () => {
     describe('without errors', () => {
+      const interactor = new Interactor();
+
+      before(() => {
+        Sinon.spy(interactor, 'after');
+        Sinon.spy(interactor, 'before');
+        Sinon.spy(interactor, 'fail');
+        Sinon.spy(interactor, 'rollback');
+      });
+
       it('succeeds', async () => {
-        const interactor = await TestInteractor1.perform<TestInteractor1>();
+        await interactor.perform();
 
         assert.isFalse(interactor.failure);
         assert.isTrue(interactor.success);
 
-        Sinon.assert.calledOnce(interactor.afterStub);
-        Sinon.assert.calledOnce(interactor.beforeStub);
-        Sinon.assert.calledOnce(interactor.performStub);
-        Sinon.assert.notCalled(interactor.failStub);
-        Sinon.assert.notCalled(interactor.rollbackStub);
+        Sinon.assert.calledOnce(interactor.after as Sinon.SinonSpy);
+        Sinon.assert.calledOnce(interactor.before as Sinon.SinonSpy);
+        Sinon.assert.notCalled(interactor.fail as Sinon.SinonSpy);
+        Sinon.assert.notCalled(interactor.rollback as Sinon.SinonSpy);
       });
     });
 
     describe('with errors', () => {
+      const interactor = new TestInteractor1();
+
+      before(() => {
+        Sinon.spy(interactor, 'after');
+        Sinon.spy(interactor, 'before');
+        Sinon.spy(interactor, 'fail');
+        Sinon.spy(interactor, 'rollback');
+      });
+
       it('fails', async () => {
-        const interactor = await TestInteractor2.perform<TestInteractor2>();
+        await interactor.perform();
 
         assert.isTrue(interactor.failure);
         assert.isFalse(interactor.success);
 
-        Sinon.assert.notCalled(interactor.afterStub);
-        Sinon.assert.calledOnce(interactor.beforeStub);
-        Sinon.assert.calledOnce(interactor.failStub);
-        Sinon.assert.notCalled(interactor.rollbackStub);
+        Sinon.assert.notCalled(interactor.after as Sinon.SinonSpy);
+        Sinon.assert.calledOnce(interactor.before as Sinon.SinonSpy);
+        Sinon.assert.calledOnce(interactor.fail as Sinon.SinonSpy);
+        Sinon.assert.notCalled(interactor.rollback as Sinon.SinonSpy);
 
         assert.instanceOf(interactor.context.error, Error);
         assert.equal(interactor.context.error.message, 'Boo!');
