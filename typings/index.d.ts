@@ -6,16 +6,15 @@ declare module 'interactor-organizer' {
     get failure(): boolean;
     get success(): boolean;
 
-    static perform(context?: any): Promise<Interactor>;
+    static perform<T extends Interactor = Interactor>(context?: any): Promise<T>;
 
     constructor(context?: any);
 
-    after(): Promise<any>;
-    before(): Promise<any>;
-    call(): Promise<any>;
+    after(): Promise<void>;
+    before(): Promise<void>;
     fail(context?: any): void;
-    perform(): Promise<Interactor>;
-    rollback(): Promise<any>;
+    perform(): Promise<void>;
+    rollback(): Promise<void>;
   }
 
   export interface OrganizeResult {
