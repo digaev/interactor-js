@@ -164,6 +164,7 @@ import { Organizer } from "interactor-organizer";
 class CreateOrder extends Organizer {
   static organize() {
     return [PlaceOrder, ChargeCard];
+  }
 }
 ```
 
