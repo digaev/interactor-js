@@ -60,6 +60,12 @@ false true { foo: 'bar', bar: 'baz' }
 
 Every interactor has `after`, `before`, `fail`, `perform` and `rollback` methods, they are very similar to the Ruby gem methods, the only "new" method is `perform` (which is used here instead of `call`).
 
+### constructor
+
+`constructor(context?: any)`
+
+`context` that will be used by the interactor, anything you want to pass to the interactor or return from it should be here. Expected an object, default `{}`.
+
 ### after
 
 `after(): Promise<void>`
