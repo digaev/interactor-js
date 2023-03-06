@@ -1,9 +1,13 @@
 /* eslint-disable class-methods-use-this */
 
 export default class Interactor {
+  #context: any;
+
   #failure = false;
 
-  context: any;
+  get context() {
+    return this.#context;
+  }
 
   get failure() {
     return this.#failure;
@@ -20,7 +24,7 @@ export default class Interactor {
   }
 
   constructor(context: any = {}) {
-    this.context = context;
+    this.#context = context;
 
     this.hook();
   }
@@ -37,7 +41,7 @@ export default class Interactor {
     this.#failure = true;
 
     Object.keys(context).forEach((k) => {
-      this.context[k] = context[k];
+      this.#context[k] = context[k];
     });
   }
 
