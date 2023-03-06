@@ -29,11 +29,11 @@ export default class Interactor {
     this.hook();
   }
 
-  public after(): Promise<void> {
+  public after(): Promise<any> {
     return Promise.resolve();
   }
 
-  public before(): Promise<void> {
+  public before(): Promise<any> {
     return Promise.resolve();
   }
 
@@ -45,11 +45,11 @@ export default class Interactor {
     });
   }
 
-  public perform(): Promise<void> {
+  public perform(): Promise<any> {
     return Promise.resolve();
   }
 
-  public rollback(): Promise<void> {
+  public rollback(): Promise<any> {
     return Promise.resolve();
   }
 
@@ -58,7 +58,7 @@ export default class Interactor {
 
     this.perform = () => Promise.resolve()
       .then(() => this.before())
-      .then(original)
+      .then(() => original())
       .then(() => this.success && this.after() as any);
   }
 }

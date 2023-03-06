@@ -68,13 +68,13 @@ Every interactor has `after`, `before`, `fail`, `perform` and `rollback` methods
 
 ### after
 
-`after(): Promise<void>`
+`after(): Promise<any>`
 
 Is called after `perform` only if the interactor didn't `fail`.
 
 ### before
 
-`before(): Promise<void>`
+`before(): Promise<any>`
 
 Is always called before `perform`.
 
@@ -88,7 +88,7 @@ If something went wrong use this method. It sets the interactor's property `fail
 
 ### perform
 
-`perform(): Promise<void>`
+`perform(): Promise<any>`
 
 Your business logic goes here. Under the hood, this method is modified so that it calls `after` and `before` hooks.
 
@@ -96,7 +96,7 @@ There is also a static method `perform(context?: any): Promise<Interactor>`.
 
 ### rollback
 
-`rollback(): Promise<void>`
+`rollback(): Promise<any>`
 
 This method is only used by Organizers if the interactor failed, to undo changes made by `perform`.
 

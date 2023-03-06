@@ -10,11 +10,11 @@ declare module 'interactor-organizer' {
 
     constructor(context?: any);
 
-    after(): Promise<void>;
-    before(): Promise<void>;
+    after(): Promise<any>;
+    before(): Promise<any>;
     fail(context?: any): void;
-    perform(): Promise<void>;
-    rollback(): Promise<void>;
+    perform(): Promise<any>;
+    rollback(): Promise<any>;
   }
 
   export interface OrganizeResult {
