@@ -64,7 +64,7 @@ Every interactor has `after`, `before`, `fail`, `perform` and `rollback` methods
 
 `constructor(context?: any)`
 
-`context` that will be used by the interactor, anything you want to pass to the interactor or return from it should be here. Expected an object, default `{}`.
+Anything you want to pass to the interactor or return from it should be stored in `context`. Expected an object, default `{}`.
 
 ### after
 
