@@ -15,6 +15,8 @@ declare module 'interactor-organizer' {
     fail(context?: any): void;
     perform(): Promise<any>;
     rollback(): Promise<any>;
+
+    protected hookPerform(): void;
   }
 
   export interface OrganizeResult {
