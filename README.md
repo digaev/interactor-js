@@ -90,7 +90,7 @@ If something went wrong use this method. It sets the interactor's property `fail
 
 `perform(): Promise<any>`
 
-Your business logic goes here. Under the hood, this method is modified so that it calls `after` and `before` hooks.
+Your business logic goes here. Under the hood, this method is modified so that it calls the `after` and `before` hooks.
 
 There is also a static method `perform(context?: any): Promise<Interactor>`.
 
@@ -124,7 +124,7 @@ Organizers sequentially `perform` interactors, if any interactor in the chain fa
 
 ## Usage
 
-Interactors examples:
+Interactors example:
 
 ```ts
 import { Interactor } from "interactor-organizer";
@@ -163,7 +163,27 @@ class ChargeCard extends Interactor {
 }
 ```
 
-Organizer example:
+If you would like to catch all errors automatically you can do the following:
+
+```ts
+class SafeInteractor extends Interactor {
+  hookPerform(): void {
+    super.hookPerform();
+
+    const original = this.perform;
+
+    this.perform = () => original.call(this)
+      .catch((error) => {
+        this.fail({ error });
+      });
+  }
+}
+
+// Inherit your interactors from `SafeInteractor`
+```
+
+Organizers example:
+
 ```ts
 import { Organizer } from "interactor-organizer";
 
@@ -186,5 +206,24 @@ function createOrder(req, res, next) {
       res.status(201).json({ _id: result.context.order._id });
     })
     .catch(next);
+}
+```
+
+If you prefer to catch and handle errors instead of checking for `failure` every time you can do the following:
+```ts
+class CreateOrder extends Organizer {
+  static organize() {
+    return [PlaceOrder, ChargeCard];
+  }
+
+  static async perform(context: any = {}) {
+    return super.perform(context)
+      .then((result) => {
+        if (result.failure) {
+          throw result.context.error || new Error('Something went wrong');
+        }
+        return result;
+      });
+  }
 }
 ```
