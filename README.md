@@ -163,7 +163,7 @@ class ChargeCard extends Interactor {
 }
 ```
 
-If you would like to catch all errors automatically you can do the following:
+If you would like to catch all errors you can do the following:
 
 ```ts
 class SafeInteractor extends Interactor {
@@ -179,7 +179,7 @@ class SafeInteractor extends Interactor {
   }
 }
 
-// Inherit your interactors from `SafeInteractor`
+// Inherit your interactors from SafeInteractor
 ```
 
 Organizers example:
@@ -210,12 +210,9 @@ function createOrder(req, res, next) {
 ```
 
 If you prefer to catch and handle errors instead of checking for `failure` every time you can do the following:
-```ts
-class CreateOrder extends Organizer {
-  static organize() {
-    return [PlaceOrder, ChargeCard];
-  }
 
+```ts
+class StrictOrganizer extends Organizer {
   static async perform(context: any = {}) {
     return super.perform(context)
       .then((result) => {
@@ -226,4 +223,6 @@ class CreateOrder extends Organizer {
       });
   }
 }
+
+// Inherit your organizers from StrictOrganizer
 ```
