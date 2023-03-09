@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/digaev/interactor-js/badge.svg)](https://coveralls.io/github/digaev/interactor-js)
 [![npm](https://img.shields.io/npm/v/interactor-organizer)](https://www.npmjs.com/package/interactor-organizer)
 
-Implementation of the Interactor pattern, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
+Interactor pattern implementation, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
 
 There are a few similar packages, but most of them are quite old and I like my implementation more. *I might rename the package, unfortunately all the pretty names are already taken and I've run out of ideas* 😕
 
@@ -163,11 +163,11 @@ class ChargeCard extends Interactor {
 }
 ```
 
-If you would like to catch all errors you can do the following:
+In the example above we're catching errors manually, but it can be tedious especially if you have more than a couple of interactors, so let's override the `perform` method to make it catch all errors for us:
 
 ```ts
 class SafeInteractor extends Interactor {
-  hookPerform(): void {
+  protected hookPerform(): void {
     super.hookPerform();
 
     const original = this.perform;
@@ -209,7 +209,7 @@ function createOrder(req, res, next) {
 }
 ```
 
-If you prefer to catch and handle errors instead of checking for `failure` every time you can do the following:
+Checking for `failure` every time may not always can be convenient, instead, you can throw errors from the organizer:
 
 ```ts
 class StrictOrganizer extends Organizer {
@@ -217,7 +217,7 @@ class StrictOrganizer extends Organizer {
     return super.perform(context)
       .then((result) => {
         if (result.failure) {
-          throw result.context.error || new Error('Something went wrong');
+          throw result.context.error || new Error(`${this.name} failed`);
         }
         return result;
       });
