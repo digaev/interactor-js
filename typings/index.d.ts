@@ -1,34 +1,30 @@
-/* eslint-disable max-classes-per-file */
+export class Interactor {
+  public get context(): any;
+  public get failure(): boolean;
+  public get success(): boolean;
 
-declare module 'interactor-organizer' {
-  export class Interactor {
-    get context(): any;
-    get failure(): boolean;
-    get success(): boolean;
+  public static perform<T extends Interactor = Interactor>(context?: any): Promise<T>;
 
-    static perform<T extends Interactor = Interactor>(context?: any): Promise<T>;
+  public constructor(context?: any);
 
-    constructor(context?: any);
+  public after(): Promise<any>;
+  public before(): Promise<any>;
+  public fail(context?: any): void;
+  public perform(): Promise<any>;
+  public rollback(): Promise<any>;
 
-    after(): Promise<any>;
-    before(): Promise<any>;
-    fail(context?: any): void;
-    perform(): Promise<any>;
-    rollback(): Promise<any>;
+  protected hookPerform(): void;
+}
 
-    protected hookPerform(): void;
-  }
+export interface OrganizeResult {
+  context: any;
+  failure: boolean;
+  success: boolean;
+}
 
-  export interface OrganizeResult {
-    context: any;
-    failure: boolean;
-    success: boolean;
-  }
+export type TypeOfInteractor = typeof Interactor;
 
-  export type TypeOfInteractor = typeof Interactor;
-
-  export class Organizer {
-    static organize(): TypeOfInteractor[];
-    static perform(context?: any): Promise<OrganizeResult>;
-  }
+export class Organizer {
+  public static organize(): TypeOfInteractor[];
+  public static perform(context?: any): Promise<OrganizeResult>;
 }
