@@ -56,12 +56,11 @@ export default class Interactor {
   protected hookPerform(): void {
     const original = this.perform;
 
-    this.perform = () => Promise.resolve()
-      .then(() => this.before())
+    this.perform = () => Promise.resolve(this.before())
       .then(() => original.call(this))
       .then((result) => {
         if (this.success) {
-          return this.after().then(() => result);
+          return Promise.resolve(this.after()).then(() => result);
         }
         return result;
       });
