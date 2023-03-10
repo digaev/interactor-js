@@ -24,6 +24,13 @@ export interface OrganizeResult {
 
 export type TypeOfInteractor = typeof Interactor;
 
+/**
+ *
+ * @param context Expected an object
+ * @param organized An array of interactors
+ */
+export function organize(context: any, interactors: TypeOfInteractor[]): Promise<OrganizeResult>
+
 export class Organizer {
   public static organize(): TypeOfInteractor[];
   public static perform(context?: any): Promise<OrganizeResult>;

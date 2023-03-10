@@ -55,7 +55,7 @@ class TestInteractor6 extends TestInteractor {
 class TestInteractor7 extends TestInteractor {
   static rollbackSpy = Sinon.spy();
 
-  public async perform(): Promise<any> {
+  public async perform() {
     this.fail({ error: new Error('TestInteractor7 failed!') });
   }
 }

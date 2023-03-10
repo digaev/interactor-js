@@ -1,61 +1,13 @@
-import Interactor from './interactor';
+/* eslint-disable class-methods-use-this */
 
-export interface OrganizeResult {
-  context: any;
-  failure: boolean;
-  success: boolean;
-}
+import organize, { OrganizeResult, TypeOfInteractor } from './organize';
 
 export default class Organizer {
-  static organize(): Array<typeof Interactor> {
+  static organize(): TypeOfInteractor[] {
     return [];
   }
 
-  static async perform(context: any = {}): Promise<OrganizeResult> {
-    const organized = this.organize();
-    const result = { context, failure: false, success: true };
-
-    if (!organized.length) {
-      return result;
-    }
-
-    return new Promise((resolve, reject) => {
-      const successful: Interactor[] = [];
-      let i = 0;
-
-      const next = () => {
-        const interactor = organized[i];
-
-        interactor.perform(context)
-          .then((current) => {
-            if (current.success) {
-              i = successful.push(current);
-
-              if (i >= organized.length) {
-                resolve(result);
-              } else {
-                next();
-              }
-            } else {
-              let rollback = Promise.resolve();
-
-              for (let j = successful.length - 1; j >= 0; j -= 1) {
-                rollback = rollback.then(() => successful[j].rollback());
-              }
-
-              rollback.then(() => {
-                result.failure = true;
-                result.success = false;
-
-                resolve(result);
-              })
-                .catch(reject);
-            }
-          })
-          .catch(reject);
-      };
-
-      next();
-    });
+  static perform(context: any = {}): Promise<OrganizeResult> {
+    return organize(context, this.organize());
   }
 }

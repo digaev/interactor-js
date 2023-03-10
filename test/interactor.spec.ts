@@ -5,7 +5,7 @@ import { assert } from 'chai';
 import Interactor from '../lib/interactor';
 
 class TestInteractor1 extends Interactor {
-  public async perform(): Promise<void> {
+  public async perform() {
     this.fail({ error: new Error('Boo!') });
   }
 }
