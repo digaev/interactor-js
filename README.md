@@ -92,13 +92,17 @@ If something went wrong use this method. It sets the interactor's property `fail
 
 Your business logic goes here. Under the hood, this method is modified so that it calls the `after` and `before` hooks.
 
-There is also a static method `perform(context?: any): Promise<Interactor>`.
-
 ### rollback
 
 `rollback(): Promise<any>`
 
 This method is only used by Organizers if the interactor failed, to undo changes made by `perform`.
+
+### static perform
+
+`static perform(context?: any): Promise<Interactor>`
+
+A shortcut to the instance method.
 
 ### context
 
@@ -185,6 +189,14 @@ class SafeInteractor extends Interactor {
 Organizers example:
 
 ```ts
+// The easiest way is to use the `organize` function
+import { organize } from "interactor-organizer";
+
+organize({}, [FirstInteractor, SecondInteractor]).then(console.log);
+```
+
+```ts
+// A more elegant way is to create an Organizer
 import { Organizer } from "interactor-organizer";
 
 class CreateOrder extends Organizer {
@@ -196,6 +208,7 @@ class CreateOrder extends Organizer {
 
 ```ts
 // orders.controller.ts
+
 function createOrder(req, res, next) {
   CreateOrder.perform({ order: ...req.body, user: req.user })
     .then((result) => {
