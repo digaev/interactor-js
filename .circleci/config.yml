@@ -4,38 +4,51 @@ orbs:
   coveralls: coveralls/coveralls@1.0.6
 
 workflows:
-  test:
+  matrix-tests:
     jobs:
-      - test
+      - test:
+          matrix:
+            parameters:
+              node-image:
+                - "node:14"
+                - "node:16"
+                - "node:18"
+
+  coveralls-upload:
+      jobs:
+        - coveralls-upload
 
 jobs:
   test:
+    parameters:
+      node-image:
+        type: string
     docker:
-      - image: 'circleci/node'
+      - image: << parameters.node-image >>
     steps:
       - checkout
       - run:
-          name: Install NVM
-          command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-      - clean
+          name: Install npm
+          command: npm i -g npm@9
       - run:
-          name: Node.js 14
-          command: source ~/.nvm/nvm.sh && nvm install --lts=fermium && npm i && npm run test
-      - clean
+          name: Install packages
+          command: npm ci
       - run:
-          name: Node.js 16
-          command: source ~/.nvm/nvm.sh && nvm install --lts=gallium && npm i && npm run test
-      - run:
-          name: Node.js 18
-          command: source ~/.nvm/nvm.sh && nvm install --lts=hydrogen && npm i && npm run coveralls
-      - coveralls/upload
+          name: Run tests
+          command: npm run test
 
-commands:
-  clean:
+  coveralls-upload:
+    docker:
+      - image: "node:18"
     steps:
+      - checkout
       - run:
-          name: Remove node_modules
-          command: rm -rf node_modules
+          name: Install npm
+          command: npm i -g npm@9
       - run:
-          name: Remove coverage
-          command: rm -rf coverage
+          name: Install packages
+          command: npm ci
+      - run:
+          name: Run coveralls
+          command: npm run coveralls
+      - coveralls/upload
