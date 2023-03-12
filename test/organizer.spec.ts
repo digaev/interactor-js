@@ -79,60 +79,72 @@ class TestOrganizer3 extends Organizer {
 }
 
 describe('Organizer', () => {
+  describe('organize', () => {
+    it('returns an empty array', () => {
+      assert.deepEqual(Organizer.organize(), []);
+    });
+  });
+
   describe('perform', () => {
-    context('without errors', () => {
-      it('should success', async () => {
-        const context = { foo: 'bar' };
-        const result = await TestOrganizer1.perform(context);
+    it('should success', async () => {
+      const result = await Organizer.perform();
 
-        assert.deepEqual(result, {
-          context,
-          failure: false,
-          success: true,
-        });
-
-        Sinon.assert.notCalled(TestInteractor1.rollbackSpy);
-        Sinon.assert.notCalled(TestInteractor2.rollbackSpy);
-        Sinon.assert.notCalled(TestInteractor3.rollbackSpy);
-        Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
-      });
+      assert.deepEqual(result, { context: {}, failure: false, success: true });
     });
+  });
 
-    context('with errors', () => {
-      it('should fail', async () => {
-        const context: any = {};
-        const result = await TestOrganizer2.perform(context);
+  describe('TestOrganizer1', () => {
+    it('should success', async () => {
+      const context = { foo: 'bar' };
+      const result = await TestOrganizer1.perform(context);
 
-        assert.isTrue(result.failure);
-        assert.isFalse(result.success);
-
-        assert.instanceOf(context.error, Error);
-        assert.equal(context.error.message, 'TestInteractor3 failed!');
-
-        Sinon.assert.calledOnce(TestInteractor1.rollbackSpy);
-        Sinon.assert.calledOnce(TestInteractor2.rollbackSpy);
-        Sinon.assert.notCalled(TestInteractor3.rollbackSpy);
-        Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
+      assert.deepEqual(result, {
+        context,
+        failure: false,
+        success: true,
       });
+
+      Sinon.assert.notCalled(TestInteractor1.rollbackSpy);
+      Sinon.assert.notCalled(TestInteractor2.rollbackSpy);
+      Sinon.assert.notCalled(TestInteractor3.rollbackSpy);
+      Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
     });
+  });
 
-    context('when rollback rejects', () => {
-      it('rejects', async () => {
-        let error: any;
+  describe('TestOrganizer2', () => {
+    it('should fail', async () => {
+      const context: any = {};
+      const result = await TestOrganizer2.perform(context);
 
-        try {
-          await TestOrganizer3.perform();
-        } catch (e) {
-          error = e;
-        }
+      assert.isTrue(result.failure);
+      assert.isFalse(result.success);
 
-        assert.instanceOf(error, Error);
-        assert.equal(error.message, 'TestInteractor5 rollback failed!');
+      assert.instanceOf(context.error, Error);
+      assert.equal(context.error.message, 'TestInteractor3 failed!');
 
-        Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
-        Sinon.assert.calledOnce(TestInteractor6.rollbackSpy);
-        Sinon.assert.notCalled(TestInteractor7.rollbackSpy);
-      });
+      Sinon.assert.calledOnce(TestInteractor1.rollbackSpy);
+      Sinon.assert.calledOnce(TestInteractor2.rollbackSpy);
+      Sinon.assert.notCalled(TestInteractor3.rollbackSpy);
+      Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
+    });
+  });
+
+  describe('TestOrganizer3', () => {
+    it('rejects', async () => {
+      let error: any;
+
+      try {
+        await TestOrganizer3.perform();
+      } catch (e) {
+        error = e;
+      }
+
+      assert.instanceOf(error, Error);
+      assert.equal(error.message, 'TestInteractor5 rollback failed!');
+
+      Sinon.assert.notCalled(TestInteractor4.rollbackSpy);
+      Sinon.assert.calledOnce(TestInteractor6.rollbackSpy);
+      Sinon.assert.notCalled(TestInteractor7.rollbackSpy);
     });
   });
 });
