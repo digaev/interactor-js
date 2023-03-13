@@ -32,7 +32,7 @@
     "eslint": "eslint ./lib ./test",
     "eslint-fix": "eslint ./lib ./test --fix",
     "prepublishOnly": "npm run build",
-    "test": "mocha --require ts-node/register test/**/*.ts"
+    "test": "mocha --require ts-node/register test/**/*.spec.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",
