@@ -13,7 +13,10 @@ export class Interactor {
   public perform(): Promise<any>;
   public rollback(): Promise<any>;
 
-  protected hookPerform(): void;
+  protected around(): void;
+}
+
+export class SafeInteractor extends Interactor {
 }
 
 export interface OrganizeResult {

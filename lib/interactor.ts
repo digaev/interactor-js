@@ -26,7 +26,7 @@ export default class Interactor {
   constructor(context: any = {}) {
     this.#context = context;
 
-    this.hookPerform();
+    this.around();
   }
 
   public after(): Promise<any> {
@@ -53,7 +53,7 @@ export default class Interactor {
     return Promise.resolve();
   }
 
-  protected hookPerform(): void {
+  protected around(): void {
     const original = this.perform;
 
     this.perform = () => Promise.resolve(this.before())
