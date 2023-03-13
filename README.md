@@ -8,6 +8,13 @@ Interactor pattern implementation, inspired by Ruby gem [interactor](https://git
 
 There are a few similar packages, but most of them are quite old and I like my implementation more. *I might rename the package, unfortunately all the pretty names are already taken and I've run out of ideas* 😕
 
+___
+
+* [Getting started](#getting-started)
+* [Interactors](#interactors)
+* [Organizers](#organizers)
+* [Usage](#usage)
+
 ## Getting started
 
 ```bash
@@ -59,6 +66,13 @@ false true { foo: 'bar', bar: 'baz' }
 ## Interactors
 
 Every interactor has `after`, `before`, `fail`, `perform` and `rollback` methods, they are very similar to the Ruby gem methods, the only "new" method is `perform` (which is used here instead of `call`).
+
+There are two classes of interactors:
+
+* `Interactor`
+* `SafeInteractor`
+
+The only difference between them is that `SafeInteractor` will never reject, instead, it calls `fail({ error })`, while `Interactor` will reject unless you catch and handle errors yourself.
 
 ### constructor
 
@@ -149,6 +163,7 @@ class PlaceOrder extends Interactor {
       .then((result) => {
         this.order._id = result.insertedId;
       })
+      // We could inherit PlaceOrder from SafeInteractor to let it catch errors for us
       .catch((error) => {
         this.fail({ error });
       });
@@ -165,25 +180,6 @@ class ChargeCard extends Interactor {
     // API call to the payment system
   }
 }
-```
-
-In the example above we're catching errors manually, but it can be tedious especially if you have more than a couple of interactors, so let's override the `perform` method to make it catch all errors for us:
-
-```ts
-class SafeInteractor extends Interactor {
-  protected hookPerform(): void {
-    super.hookPerform();
-
-    const original = this.perform;
-
-    this.perform = () => original.call(this)
-      .catch((error) => {
-        this.fail({ error });
-      });
-  }
-}
-
-// Inherit your interactors from SafeInteractor
 ```
 
 Organizers example:
