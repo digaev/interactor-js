@@ -1,7 +1,7 @@
 # interactor-organizer
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/digaev/interactor-js/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/digaev/interactor-js/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/digaev/interactor-js/badge.svg)](https://coveralls.io/github/digaev/interactor-js)
+[![Coverage Status](https://coveralls.io/repos/github/digaev/interactor-js/badge.svg?branch=master)](https://coveralls.io/github/digaev/interactor-js?branch=master)
 [![npm](https://img.shields.io/npm/v/interactor-organizer)](https://www.npmjs.com/package/interactor-organizer)
 
 Interactor pattern implementation, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
