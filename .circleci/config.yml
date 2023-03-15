@@ -15,8 +15,8 @@ workflows:
                 - "node:18"
 
   coveralls-upload:
-      jobs:
-        - coveralls-upload
+    jobs:
+      - coveralls-upload
 
 jobs:
   test:
