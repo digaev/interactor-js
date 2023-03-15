@@ -30,7 +30,7 @@ export type TypeOfInteractor = typeof Interactor;
 /**
  *
  * @param context Expected an object
- * @param organized An array of interactors
+ * @param interactors An array of interactors
  */
 export function organize(context: any, interactors: TypeOfInteractor[]): Promise<OrganizeResult>
 
