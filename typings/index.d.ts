@@ -26,12 +26,16 @@ export interface OrganizeResult {
 }
 
 export type TypeOfInteractor = typeof Interactor;
+export type TypeOfSafeInteractor = typeof SafeInteractor;
 
-/**
- *
- * @param context Expected an object
- * @param interactors An array of interactors
- */
+export type AfterFunction = (this: Interactor) => Promise<any>;
+export type BeforeFunction = (this: Interactor) => Promise<any>;
+export type PerformFunction = (this: Interactor) => Promise<any>;
+export type RollbackFunction = (this: Interactor) => Promise<any>;
+
+export function createInteractor(perform: PerformFunction, rollback?: RollbackFunction, before?: BeforeFunction, after?: AfterFunction): TypeOfInteractor;
+export function createSafeInteractor(perform: PerformFunction, rollback?: RollbackFunction, before?: BeforeFunction, after?: AfterFunction): TypeOfSafeInteractor;
+
 export function organize(context: any, interactors: TypeOfInteractor[]): Promise<OrganizeResult>
 
 export class Organizer {

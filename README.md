@@ -6,8 +6,6 @@
 
 Interactor pattern implementation, inspired by Ruby gem [interactor](https://github.com/collectiveidea/interactor).
 
-There are a few similar packages, but most of them are quite old and I like my implementation more. *I might rename the package, unfortunately all the pretty names are already taken and I've run out of ideas* 😕
-
 ___
 
 * [Getting started](#getting-started)
@@ -180,6 +178,16 @@ class ChargeCard extends Interactor {
     // API call to the payment system
   }
 }
+```
+
+There are helper functions to create an Interactor class runtime:
+
+```ts
+import { createInteractor } from "interactor-organizer";
+
+// Do not use arrow/anonymous functions if you want to access `this`
+const FirstInteractor = createInteractor(function perform() { console.log('first'); });
+const SecondInteractor = createInteractor(function perform() { console.log('second'); });
 ```
 
 Organizers example:
