@@ -108,7 +108,7 @@ Your business logic goes here. Under the hood, this method is modified so that i
 
 `rollback(): Promise<any>`
 
-This method is only used by Organizers if one of the further interactors in the chain fails so that the interactor can undo the changes made by `perform`.
+This method is only used by Organizers to allow successfully resolved interactors in the chain to undo the changes made by `perform`.
 
 ### static perform
 
